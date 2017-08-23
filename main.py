@@ -13,8 +13,14 @@ cwd = os.getcwd()
 
 def update_files(date):
 
-    if ans in inputfuncs.pvt_answers:
-        if bl2_tbi in inputfuncs.bl2_answers:
+    print("What experiment data do you want to update?: ")
+    ex_ans = input("Bl2 or mTBI?: ")
+    printthings.dash_split
+    print("What task do you want to update?: ")
+    tk_ans = input("PVT or GNG?: ")
+
+    if tk_ans in inputfuncs.pvt_answers:
+        if ex_ans in inputfuncs.bl2_answers:
             dir_to_update = f"{cwd}/bl2_data/"
             updated_file_name = f"{date}_mTBI_pvt.csv"
             for row in os.listdir(dir_to_update):
@@ -30,8 +36,8 @@ def update_files(date):
                 if "pvt" in row:
                     file_to_update = row
             print(f"File to replace: {file_to_update}")
-    elif ans in inputfuncs.gng_answers:
-        if bl2_tbi in inputfuncs.bl2_answers:
+    elif tk_ans in inputfuncs.gng_answers:
+        if ex_ans in inputfuncs.bl2_answers:
             dir_to_update = f"{cwd}/bl2_data/"
             updated_file_name = f"{date}_bl2_gng.csv"
             for row in os.listdir(dir_to_update):
@@ -96,7 +102,7 @@ Be sure to wait at least six(6) months for a reply.""")
 printthings.dash_split()
 
 print("""This script will take a filepath as input and return an out_csv to a
-directory of your chosing. To begin, please chose which type of computerized
+directory on your desktop. To begin, please chose which type of computerized
 assessment you would like to score.
 1 - Go No Go
 2 - PVT
