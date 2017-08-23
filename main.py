@@ -7,11 +7,92 @@ import statistics
 import printthings
 import datetime
 import os
+from shutil import copy2, move
+
+cwd = os.getcwd()
+
+def update_files(date):
+
+    if ans in inputfuncs.pvt_answers:
+        if bl2_tbi in inputfuncs.bl2_answers:
+            dir_to_update = f"{cwd}/bl2_data/"
+            updated_file_name = f"{date}_mTBI_pvt.csv"
+            for row in os.listdir(dir_to_update):
+                row = row.lower()
+                if "pvt" in row:
+                    file_to_update = row
+            print(f"File to replace: {file_to_update}")
+        else:
+            dir_to_update = f"{cwd}/mTBI_Data/"
+            updated_file_name = f"{date}_mTBI_pvt.csv"
+            for row in os.listdir(dir_to_update):
+                row = row.lower()
+                if "pvt" in row:
+                    file_to_update = row
+            print(f"File to replace: {file_to_update}")
+    elif ans in inputfuncs.gng_answers:
+        if bl2_tbi in inputfuncs.bl2_answers:
+            dir_to_update = f"{cwd}/bl2_data/"
+            updated_file_name = f"{date}_bl2_gng.csv"
+            for row in os.listdir(dir_to_update):
+                row = row.lower()
+                if "gng" in row:
+                    file_to_update = row
+            print(f"File to replace: {file_to_update}")
+        else:
+            dir_to_update = f"{cwd}/mTBI_Data/"
+            updated_file_name = f"{date}_mTBI_gng.csv"
+            for row in os.listdir(dir_to_update):
+                row = row.lower()
+                if "gng" in row:
+                    file_to_update = row
+            print(f"File to replace: {file_to_update}")
+
+    new_file = inputfuncs.is_valid_path("Please enter the filepath of the file you wish to update: ")
+    new_file = copy2(new_file, f"{dir_to_update}/{updated_file_name}")
+
+def show_files(date):
+
+    printthings.dash_split()
+    print("""Before we score these puppies - we should find out if all your files
+are currently up to date: here are the TBI model e-prime files:""")
+    printthings.dash_split()
+    mtbi_dir = (os.listdir("{}/mTBI_Data/".format(cwd)))
+    for row in mtbi_dir:
+        print(row)
+    printthings.dash_split()
+    print("...And the files for Bright Light 2: ")
+    printthings.dash_split()
+    bl2_dir = (os.listdir("{}/bl2_Data".format(cwd)))
+    for row in bl2_dir:
+        print(row)
+    printthings.dash_split()
+    print("""If the dates on the files are not the most recent versions of these
+files, type 'update' move the most recent version into the program directory.""")
+    update_files_yn = input("Update?: ").lower()
+    if update_files_yn in inputfuncs.update_files_yn_ans:
+        update_files(date)
+        printthings.dash_split()
+    else:
+        printthings.dash_split()
+        pass
 
 user = getpass.getuser() #used in naming export file
 date = datetime.date.today() #used in naming export file
 
 printthings.dash_split()
+print("""Version 0.0 of SCAN LAB E-Prime Scoring Script:
+The author of this application wishes you well,
+and hopes that you do not blow up your compter
+while using this application.
+
+Please just give the program the info it wants (things
+will go poorly for you if you do not).
+
+Any questions can be directed to: tjgran01@syr.edu.
+Be sure to wait at least six(6) months for a reply.""")
+printthings.dash_split()
+
 print("""This script will take a filepath as input and return an out_csv to a
 directory of your chosing. To begin, please chose which type of computerized
 assessment you would like to score.
@@ -20,7 +101,9 @@ assessment you would like to score.
 printthings.dash_split()
 
 ans = inputfuncs.get_proper_user_response("Go No Go or PVT?: ") #user chooses PVT or GoNoGo
-bl2_tbi = inputfuncs.get_proper_user_response("Bl2 or mTBI?: ") # user chooses Bl2 or mTBI
+bl2_tbi = inputfuncs.get_proper_user_response("Bl2 or mTBI?: ") #user chooses Bl2 or mTBI
+
+show_files(date)
 
 #PVT SCORING BELOW
 if ans in inputfuncs.pvt_answers:
@@ -34,12 +117,18 @@ if ans in inputfuncs.pvt_answers:
     list_of_final_cols = ["Subject", "Session", "TextDisplay1.RT", "Too Early",
     "Too Fast", "Lapses", "False Starts", "Rejected Trials", "Reaction Time", "Speed", "Id With Session"]
 
-
     if bl2_tbi in inputfuncs.bl2_answers:
-        df = pd.read_csv("/users/" + user + "/python/programs/eprimepar/trypandas/bl2_data/samplepvt.csv")
+        for row in os.listdir(f"{cwd}/bl2_data/"):
+            row = row.lower()
+            if "pvt" in row:
+                file_to_update = row
+        df = pd.read_csv(f"{cwd}/bl2_Data/{file_to_update}")
     elif bl2_tbi in inputfuncs.mtbi_answers:
-        df = pd.read_csv("/users/" + user + "/python/programs/eprimepar/trypandas/mTBI_Data/samplepvt.csv")
-
+        for row in os.listdir(f"{cwd}/mTBI_data/"):
+            row = row.lower()
+            if "pvt" in row:
+                file_to_update = row
+        df = pd.read_csv(f"{cwd}/mTBI_Data/{file_to_update}")
     df = df[list_of_cols]
 
     df["Too Early"] = np.where((df["WaitATwoSec.RT"] > 0) | (df["WaitBThreeSec.RT"] > 0) |
@@ -54,7 +143,6 @@ if ans in inputfuncs.pvt_answers:
     df["Id With Session"] = df["Subject"].map(str) + "_" + (df["Session"]).map(str)
 
     df = df[list_of_final_cols]
-    print(df)
 
     ind_session = df["Id With Session"].unique()
 
@@ -99,9 +187,17 @@ elif ans in inputfuncs.gng_answers:
     "Image.RESP", "Image.RT", "MainCondition"]
 
     if bl2_tbi in inputfuncs.bl2_answers:
-        df = pd.read_csv("/users/" + user + "/python/programs/eprimepar/trypandas/bl2_data/samplegng.csv")
+        for row in os.listdir(f"{cwd}/bl2_data/"):
+            row = row.lower()
+            if "gng" in row:
+                file_to_update = row
+        df = pd.read_csv(f"{cwd}/bl2_data/{file_to_update}")
     elif bl2_tbi in inputfuncs.mtbi_answers:
-        df = pd.read_csv("/users/" + user + "/python/programs/eprimepar/trypandas/mTBI_Data/samplegng.csv")
+        for row in os.listdir(f"{cwd}/mTBI_Data/"):
+            row = row.lower()
+            if "gng" in row:
+                file_to_update = row
+        df = pd.read_csv(f"{cwd}/mTBI_Data/{file_to_update}")
 
     df = df[list_of_cols]
     df["Total Go"] = np.where(df["MainCondition"] == "Go", 1, None)

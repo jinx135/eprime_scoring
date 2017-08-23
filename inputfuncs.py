@@ -7,6 +7,7 @@ gng_answers = ["1", "go", "gng", "go no go", "gonogo"]
 pvt_answers = ["2", "pvt", "pv", "pt"]
 bl2_answers = ["1", "bl2", "l2", "b2", "blue light 2"]
 mtbi_answers = ["2", "mtbi", "tbimodel", "tbi model", "tbi"]
+update_files_yn_ans = ["update"]
 
 def make_file_path(path):
 
