@@ -67,12 +67,14 @@ are currently up to date: here are the TBI model e-prime files:""")
     for row in bl2_dir:
         print(row)
     printthings.dash_split()
-    print("""If the dates on the files are not the most recent versions of these
-files, type 'update' move the most recent version into the program directory.""")
+    print("""If the dates on the files are not the most recent versions of these files,
+type 'update' move the most recent version into the program directory. Press
+enter to continue to main program.""")
+    printthings.dash_split()
     update_files_yn = input("Update?: ").lower()
     if update_files_yn in inputfuncs.update_files_yn_ans:
-        update_files(date)
         printthings.dash_split()
+        update_files(date)
     else:
         printthings.dash_split()
         pass
@@ -97,13 +99,18 @@ print("""This script will take a filepath as input and return an out_csv to a
 directory of your chosing. To begin, please chose which type of computerized
 assessment you would like to score.
 1 - Go No Go
-2 - PVT""")
+2 - PVT
+3 - Update Data Files""")
 printthings.dash_split()
 
 ans = inputfuncs.get_proper_user_response("Go No Go or PVT?: ") #user chooses PVT or GoNoGo
+if ans in inputfuncs.update_answer:
+    show_files(date)
+    print("""please chose which type of computerized assessment you would like to score.
+1 - Go No Go
+2 - PVT""")
+    ans = inputfuncs.get_proper_user_response("Go No Go or PVT?: ")
 bl2_tbi = inputfuncs.get_proper_user_response("Bl2 or mTBI?: ") #user chooses Bl2 or mTBI
-
-show_files(date)
 
 #PVT SCORING BELOW
 if ans in inputfuncs.pvt_answers:
